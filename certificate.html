@@ -293,6 +293,7 @@ document.getElementById('cert-date').innerText = formattedDate;
     pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
     pdf.save(`${name.replace(/\s+/g,'_')}_certificate.pdf`);
   });
+  
 </script>
 
 </body>
