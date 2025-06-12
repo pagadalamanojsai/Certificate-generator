@@ -196,10 +196,8 @@
       <p class="description" style="margin-bottom: 1em;">This certificate is awarded to</p>
       <div class="recipient-name" id="cert-name">[Name]</div>
       <p class="description" id="cert-description" style="margin-top: 2em;">
-        In recognition of <br>
-        His/ Her successfully completing the 128-days in <br>
-        [Program] Internship Program, showcasing exceptional<br>
-         performance and dedication <br>
+        In recognition of His/ Her successfully completing the 128-days in <br>
+        [Program] Internship Program, showcasing exceptional performance and dedication <br>
         conducted from [Duration].
     </p>
       </p>
@@ -319,11 +317,9 @@ if (durationParts.length === 2) {
 const numberOfDays = manualDaysInput || calculatedDays || '___';
 
 document.getElementById('cert-description').innerHTML =
-  `In recognition of<br>
-   His/Her successfully completing the ${numberOfDays}-days in
+  `In recognition of His/Her successfully completing the ${numberOfDays}-days in
    <strong>${program}</strong><br>
-   Internship Program, showcasing exceptional<br>
-   performance and dedication<br>
+   Internship Program, showcasing exceptional performance and dedication<br>
    conducted from <strong>${duration}</strong>.`;
 
 
