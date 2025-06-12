@@ -113,13 +113,13 @@
   bottom: 20px;
   left: 5%;
   right: 5%;
+}
 
-  .date-block {
+.date-block {
   margin-left: 5rem;    /* ← pushes the date to the right */
   text-align: center;
   position: relative;
-  bottom: -30px
-}
+  bottom: -30px;
 }
 
     .date-block, .sign-block { text-align:center; position:relative;   }
@@ -160,6 +160,11 @@
       <label for="duration">Duration</label>
       <input id="duration" type="text" placeholder="12-November-2024 to 20-March-2025"/>
     </div>
+    <div class="form-group">
+  <label for="manualDays">Number of Days (optional)</label>
+  <input id="manualDays" type="number" placeholder="e.g. 128"/>
+</div>
+
     <div class="form-group">
   <label for="issueDate">Issue Date</label>
   <input id="issueDate" type="date"/>
@@ -243,13 +248,81 @@
     const idNo     = Math.floor(100000 + Math.random() * 900000).toString();
 
     document.getElementById('cert-name').innerText = name;
-    document.getElementById('cert-description').innerHTML =
-      `In recognition of<br>
-       His/Her successfully completing the 128‑days in
-       <strong>${program}</strong><br>
-       Internship Program, showcasing exceptional<br>
-       performance and dedication<br>
-       conducted from <strong>${duration}</strong>.`;
+    // Function to parse date in format "12-November-2024"
+function parseDate(str) {
+  const months = {
+    January: 0, February: 1, March: 2, April: 3, May: 4, June: 5,
+    July: 6, August: 7, September: 8, October: 9, November: 10, December: 11
+  };
+  const [day, monthName, year] = str.split('-');
+  return new Date(year, months[monthName], day);
+}
+
+let numDays = 0;
+let startDateStr = '';
+let endDateStr = '';
+
+// Extract start and end dates from the duration string
+const parts = duration.split(' to ');
+if (parts.length === 2) {
+  try {
+    const start = parseDate(parts[0]);
+    const end = parseDate(parts[1]);
+    numDays = Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1; // include start day
+    startDateStr = parts[0];
+    endDateStr = parts[1];
+  } catch (e) {
+    console.error("Date parsing failed:", e);
+  }
+}
+function parseFlexibleDate(str) {
+  const monthNames = {
+    January: 0, February: 1, March: 2, April: 3, May: 4, June: 5,
+    July: 6, August: 7, September: 8, October: 9, November: 10, December: 11
+  };
+
+  const parts = str.split('-');
+  if (parts.length === 3) {
+    const day = parseInt(parts[0]);
+    const monthRaw = parts[1];
+    const year = parseInt(parts[2]);
+
+    let month;
+    if (isNaN(monthRaw)) {
+      month = monthNames[monthRaw];
+    } else {
+      month = parseInt(monthRaw) - 1;
+    }
+
+    return new Date(year, month, day);
+  }
+
+  return null;
+}
+
+const manualDaysInput = document.getElementById('manualDays').value.trim();
+const durationParts = duration.split(' to ');
+let calculatedDays = null;
+
+if (durationParts.length === 2) {
+  const start = parseFlexibleDate(durationParts[0]);
+  const end = parseFlexibleDate(durationParts[1]);
+  if (start && end && end > start) {
+    calculatedDays = Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1;
+  }
+}
+
+const numberOfDays = manualDaysInput || calculatedDays || '___';
+
+document.getElementById('cert-description').innerHTML =
+  `In recognition of<br>
+   His/Her successfully completing the ${numberOfDays}-days in
+   <strong>${program}</strong><br>
+   Internship Program, showcasing exceptional<br>
+   performance and dedication<br>
+   conducted from <strong>${duration}</strong>.`;
+
+
     document.getElementById('cert-id').innerText   = idNo;
     const issueDateInput = document.getElementById('issueDate').value;
 function formatDateDMY(dateStr) {
@@ -292,24 +365,25 @@ document.getElementById('cert-date').innerText = formattedDate;
     });
     pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
     pdf.save(`${name.replace(/\s+/g,'_')}_certificate.pdf`);
-  // --- 5) Save data to MongoDB ---
-    fetch(`${import.meta.env.VITE_API_URL}/certificates`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        name: name,
-        program: program,
-        duration: duration,
-        idNumber: idNo,
-        date: new Date().toISOString()
-      })
-    })
-    .then(response => response.json())
-    .then(data => console.log('Certificate saved:', data))
-    .catch(error => console.error('Error saving to database:', error));
-  });
+  // // --- 5) Save data to MongoDB ---
+  //   fetch(`${import.meta.env.VITE_API_URL}/certificates`, {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json'
+  //     },
+  //     body: JSON.stringify({
+  //       name: name,
+  //       program: program,
+  //       duration: duration,
+  //       idNumber: idNo,
+  //       date: new Date().toISOString()
+  //     })
+  //   })
+  //   .then(response => response.json())
+  //   .then(data => console.log('Certificate saved:', data))
+  //   .catch(error => console.error('Error saving to database:', error));
+  // 
+});
 </script>
 
 </body>
