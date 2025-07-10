@@ -365,24 +365,24 @@ document.getElementById('cert-date').innerText = formattedDate;
     });
     pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
     pdf.save(`${name.replace(/\s+/g,'_')}_certificate.pdf`);
-  // // --- 5) Save data to MongoDB ---
-  //   fetch(`${import.meta.env.VITE_API_URL}/certificates`, {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json'
-  //     },
-  //     body: JSON.stringify({
-  //       name: name,
-  //       program: program,
-  //       duration: duration,
-  //       idNumber: idNo,
-  //       date: new Date().toISOString()
-  //     })
-  //   })
-  //   .then(response => response.json())
-  //   .then(data => console.log('Certificate saved:', data))
-  //   .catch(error => console.error('Error saving to database:', error));
-  // 
+  // 5) Save data to MongoDB 
+    //  fetch(`${import.meta.env.VITE_API_URL}/certificates`, {
+    //    method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSON.stringify({
+    //     name: name,
+    //     program: program,
+    //     duration: duration,
+    //     idNumber: idNo,
+    //     date: new Date().toISOString()
+    //   })
+    // })
+    // .then(response => response.json())
+    // .then(data => console.log('Certificate saved:', data))
+    // .catch(error => console.error('Error saving to database:', error));
+  
 });
 </script>
 
